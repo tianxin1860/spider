@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 
-############################################################
-# 
-# Copyright (c) 2017 Baidu.com, Inc. All Rights Reserved
-#
-############################################################
 """
-Brief: 将各种编码类型的内容转换为unicode编码
+Brief: handle all things that related to encoding
 
-Author: tianxin(tianxin04@baidu.com)
+Author: tianxin
 Date: 2017/01/08 20:23:45
 """
 

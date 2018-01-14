@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-############################################################
-# 
-# Copyright (c) 2017 Baidu.com, Inc. All Rights Reserved
-#
-############################################################
-
 """
 Brief: wrapper of logging module
 
-Author: tianxin(tianxin04@baidu.com)
+Author: tianxin
 Date: 2018/01/11 19:14:33
 """
 

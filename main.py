@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 
-############################################################
-# 
-# Copyright (c) 2017 Baidu.com, Inc. All Rights Reserved
-#
-############################################################
 """
 Brief: main script
 
-Author: tianxin(tianxin04@baidu.com)
+Author: tianxin
 Date: 2017/01/08 20:23:45
 """
 
