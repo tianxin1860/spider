@@ -4,7 +4,7 @@
 """
 Brief: 实现线程安全的集合类
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
 """
 
@@ -22,6 +22,8 @@ class ThreadSafeSet(object):
         self.__lock = threading.Lock()
 
     def size(self):
+        """ get length of __safe_set
+        """
         return len(self.__safe_set)
 
     def update_set(self, url):

@@ -2,9 +2,9 @@
 # -*- coding:utf8 -*-
 
 """
-Brief: webpage parser
+Brief: PageParser
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
 """
 
@@ -14,14 +14,14 @@ import urlparse
 class PageParser(HTMLParser.HTMLParser):
     """To parse webpage, extract all urls.
 
-    Attributes:
-        tag_attr: 带提取的标签属性配置
+        Attrbutes:
+            candidate_url_list: candidate urls which will be selected to crwal
     """
 
     def __init__(self):
         #super(PageParser, self).__init__() 这种写法要求PageParser必须是new-style-class, 然而HTMLParser是old-style-class
         HTMLParser.HTMLParser.__init__(self)
-        self.candidate_url_list = list() #
+        self.candidate_url_list = list()
 
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
@@ -30,11 +30,11 @@ class PageParser(HTMLParser.HTMLParser):
                     self.candidate_url_list.append(value)
 
     def extract_urls_from_page(self):
-        """axtract all urls from webpage
+        """extract all urls from webpage
 
             Returns: parsed_urls
         """ 
-        parsed_urls = []
+        parsed_urls = list()
         for value in self.candidate_url_list:
             try:
                 ret = urlparse.urlparse(value)

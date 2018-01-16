@@ -4,7 +4,7 @@
 """
 Brief: wrapper of logging module
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2018/01/11 19:14:33
 """
 

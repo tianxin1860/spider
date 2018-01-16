@@ -4,7 +4,7 @@
 """
 Brief: Save webpage to specified directory
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
 """
 
@@ -22,8 +22,6 @@ def save(url, page, encoding, save_dir):
             encoding: save page with the encoding
             save_dir: output directory
     """ 
-    if not url.endswith("html"):
-        url = url + ".html"
 
     file_path = os.path.join(save_dir, urllib.quote_plus(url))
 

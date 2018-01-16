@@ -4,7 +4,7 @@
 """
 Brief: spider
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
 """
 
@@ -29,7 +29,6 @@ class Spider(object):
     def __init__(self):
         self.url_queue = Queue.Queue()
         self.url_set = url_table.ThreadSafeSet()
-
 
     def initialize(self, config_path):
         """initialize url_queue and load config file.
@@ -57,7 +56,6 @@ class Spider(object):
                 self.url_queue.put((url, 0))
 
         return True
-
 
     def start(self):
         """create crawl thread and start crawling

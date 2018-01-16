@@ -4,7 +4,7 @@
 """
 Brief: load seed url from sedd file
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
 """
 

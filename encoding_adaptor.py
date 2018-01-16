@@ -2,9 +2,9 @@
 # -*- coding:utf8 -*-
 
 """
-Brief: handle all things that related to encoding
+Brief: 将各种编码类型的内容转换为unicode编码
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
 """
 

@@ -4,10 +4,11 @@
 """
 Brief: load config
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
 """
 import os
+import re
 import ConfigParser
 
 import log
@@ -59,6 +60,8 @@ class Config(object):
                 self.max_depth = self.config_parser.getint("spider", "max_depth")
                 self.crawl_interval = self.config_parser.getint("spider", "crawl_interval")
                 self.crawl_timeout = self.config_parser.getint("spider", "crawl_timeout")
+                self.target_url = self.config_parser.get("spider", "target_url")
+                self.url_pattern = re.compile(self.target_url)
                 self.thread_num = self.config_parser.getint("spider", "thread_num")
                 return True
             except ConfigParser.NoSectionError as e:

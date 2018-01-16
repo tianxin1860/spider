@@ -2,17 +2,18 @@
 # -*- coding:utf8 -*-
 
 """
-Brief: Crawler_thread
+Brief: CrawlerThread
 
-Author: tianxin
+Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
 """
 
+import time
+import logging
 import urllib2
 import threading
 import socket
 
-import logging
 import webpage_parse
 import webpage_save
 import url_table
@@ -22,10 +23,11 @@ class CrawlThread(threading.Thread):
     """CrawlThread class
 
     Attributes:
-        config: config
-        url_queue: urls to be crawled
-        url_set: urls has been crawld
+        config: Config
+        url_queue: Urls to be crawled
+        url_set: Urls has been crawld
         max_depth: The maximum depth for crawling
+        url_pattern: Regex object
         crawl_interval: The interval for crawling
         crawl_timeout: The max time waiting for crawling
     """
@@ -44,72 +46,65 @@ class CrawlThread(threading.Thread):
         self.crawl_interval = config.crawl_interval
         self.crawl_timeout = config.crawl_timeout
         self.save_dir = config.save_dir
+        self.url_pattern = config.url_pattern
 
     def run(self):
         """thread function
         """
+
         while True:
-            finish_flag, page, depth, url = self.download()
-            if finish_flag:
-                break
-            elif not finish_flag and page is not None:
-                page, encoding = encoding_adaptor.decode(page)
-                if encoding is None:
-                    continue #对于未识别出编码类型的资源,例如安装包等资源,直接跳过
-                if depth < self.max_depth:
-                    webpage_save.save(url, page, encoding, self.save_dir) #此处url需要考虑重新组织
-                    page_parser = webpage_parse.PageParser()
-                    page_parser.feed(page)
-                    extracted_urls = page_parser.extract_urls_from_page()
-                    self.add_urls_to_queue(extracted_urls, depth + 1)
-                elif depth == self.max_depth:
-                    webpage_save.save(url, page, encoding, self.save_dir)
-                else:
-                    continue
-            else:
+            url, depth = self.url_queue.get(block=True)
+
+            try:
+                response = urllib2.urlopen(url, timeout=self.crawl_timeout)
+                page_content = response.read()
+            except urllib2.URLError as e:
+                logging.error("request of url:%s failed, [Exception]:%s, [Queue_num:%d]" \
+                        % (url, e, self.url_queue.qsize()))
+                self.url_queue.task_done()
                 continue
-    
-    def download(self):
-        """download html code of the url
-        """
-        try:
-            url, depth = self.url_queue.get()
-        except Queue.Empty as e:
-            logging.info("crawling finished in thread:%s, Exception:%s" % (self.getName(), e))
-            return True, None, -1, url
+            except socket.timeout as e:
+                logging.error("request of url:%s failed, [Exception]:%s, [Queue_num:%d]" \
+                        % (url, e, self.url_queue.qsize()))
+                self.url_queue.task_done()
+                continue
+            except Exception as e:
+                logging.error("request of url:%s failed, [Exception]:%s, [Queue_num:%d]" % \
+                        (url, e, self.url_queue.qsize()))
+                self.url_queue.task_done()
+                continue
 
-        if depth > self.max_depth:
-            logging.info("[Thread:%s] skip url:%s depth > max_depth" % self.getName(), url)
-            self.url_queue.task_done()
-            return False, None, depth, url
+            # decoding page, return unicode page and encoding of the page
+            page, encoding = encoding_adaptor.decode(page_content)
 
-        try:
-            response = urllib2.urlopen(url, timeout=self.crawl_timeout)
-            page_content = response.read()
+            # save webpage
+            webpage_save.save(url, page, encoding, self.save_dir)
+
+            # if depth does not reach max_depth, extract the urls
+            if depth < self.max_depth:
+                page_parser = webpage_parse.PageParser()
+                page_parser.feed(page)
+                extracted_urls = page_parser.extract_urls_from_page()
+                self.add_urls_to_queue(extracted_urls, depth + 1)
+
             self.url_queue.task_done()
-            return False, page_content, depth, url
-        except urllib2.URLError as e:
-            logging.error("request of url:%s failed, [Exception]:%s, [Queue_num:%d]" % (url, e, self.url_queue.qsize()))
-            self.url_queue.task_done()
-            return False, None, depth, url
-        except socket.timeout as e:
-            logging.error("request of url:%s failed, [Exception]:%s, [Queue_num:%d]" % (url, e, self.url_queue.qsize()))
-            self.url_queue.task_done()
-            return False, None, depth, url
-        except Exception as e:
-            logging.error("request of url:%s failed, [Exception]:%s, [Queue_num:%d]" % (url, e, self.url_queue.qsize()))
-            self.url_queue.task_done()
-            return False, None, depth, url
+
+            # 为了防止ip被封禁
+            time.sleep(self.crawl_interval)
 
     def add_urls_to_queue(self, url_list, depth):
-        """
-            select url which has not been crawled,
-            and then add these urls to url_queue
+        """select url which has not been crawled,
+           and matched the url_pattern, 
+           and then add these urls to url_queue
 
             Args:
                 url_list:
                 depth:
         """
         for url in url_list:
+            if not self.url_pattern.match(url):
+                logging.info("[url:%s] not satisfied with url_pattehr" % url)
+                continue
+
             if self.url_set.update_set(url) == "OK":
                 self.url_queue.put((url, depth))
