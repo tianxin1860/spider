@@ -33,14 +33,14 @@ class ThreadSafeSet(object):
                 url: url to add to set
 
             Returns:
-                "OK"   : If url has been added to set successfully
-                "ERROR": If url has existed in set
+                True: If url has been added to set successfully
+                Fase: If url has existed in set
         """
         self.__lock.acquire()
         if url in self.__safe_set:
-            ret = "ERROR"
+            ret = False
         else:
             self.__safe_set.add(url)
-            ret = "OK"
+            ret = True
         self.__lock.release()
         return ret

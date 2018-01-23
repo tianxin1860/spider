@@ -29,8 +29,11 @@ class PageParser(HTMLParser.HTMLParser):
                 if attr == 'href':
                     self.candidate_url_list.append(value)
 
-    def extract_urls_from_page(self):
+    def extract_urls_from_page(self, base_url):
         """extract all urls from webpage
+
+            Args:
+                base_url: url corresponding to the webpage
 
             Returns: parsed_urls
         """ 
@@ -40,6 +43,11 @@ class PageParser(HTMLParser.HTMLParser):
                 ret = urlparse.urlparse(value)
                 if ret.scheme in ("http", "https"):
                     parsed_urls.append(value)
+                elif ret.scheme == '':
+                    url = urlparse.urljoin(base_url, value)
+                    parsed_urls.append(url)
+                else:
+                    continue
             except Exception as e:
                 logging.error("[parse exception]:%s" % e)
 

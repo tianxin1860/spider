@@ -31,6 +31,11 @@ def parse_commandline():
 
 
 def main():
+    """1.初始化日志
+       2.解析命令行参数获取配置文件路径
+       3.创建Spider对象并初始化
+       4.开始抓取
+    """
     log.init_log('./log/spider')
     config_path = parse_commandline()
 

@@ -2,7 +2,7 @@
 # -*- coding:utf8 -*-
 
 """
-Brief: CrawlerThread
+Brief: CrawlThread
 
 Author: tianxin(15626487296@163.com)
 Date: 2017/01/08 20:23:45
@@ -84,7 +84,7 @@ class CrawlThread(threading.Thread):
             if depth < self.max_depth:
                 page_parser = webpage_parse.PageParser()
                 page_parser.feed(page)
-                extracted_urls = page_parser.extract_urls_from_page()
+                extracted_urls = page_parser.extract_urls_from_page(url)
                 self.add_urls_to_queue(extracted_urls, depth + 1)
 
             self.url_queue.task_done()
@@ -106,5 +106,5 @@ class CrawlThread(threading.Thread):
                 logging.info("[url:%s] not satisfied with url_pattehr" % url)
                 continue
 
-            if self.url_set.update_set(url) == "OK":
+            if self.url_set.update_set(url) == True:
                 self.url_queue.put((url, depth))

@@ -52,7 +52,7 @@ class Spider(object):
             return False
 
         for url in seed_urls:
-            if self.url_set.update_set(url) == "OK":
+            if self.url_set.update_set(url) == True:
                 self.url_queue.put((url, 0))
 
         return True
