@@ -18,7 +18,7 @@ def print_usage():
     """Print usage of the script
     """
 
-    print ("Usage: python mini_spider.py -c config_path")
+    print ("Usage: python main.py -c config_path")
 
 
 def parse_commandline():
