@@ -53,7 +53,8 @@ class CrawlThread(threading.Thread):
         """
 
         while True:
-            url, depth = self.url_queue.get(block=True)
+            logging.info("[Queue_num before get:%d]" % self.url_queue.qsize())
+            url, depth = self.url_queue.get(block=True, timeout=3)
 
             try:
                 response = urllib2.urlopen(url, timeout=self.crawl_timeout)
@@ -88,6 +89,7 @@ class CrawlThread(threading.Thread):
                 self.add_urls_to_queue(extracted_urls, depth + 1)
 
             self.url_queue.task_done()
+            logging.info("[Queue_num after get:%d]" % self.url_queue.qsize())
 
             # 为了防止ip被封禁
             time.sleep(self.crawl_interval)

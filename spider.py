@@ -27,7 +27,7 @@ class Spider(object):
     """
 
     def __init__(self):
-        self.url_queue = Queue.Queue()
+        self.url_queue = Queue.Queue(maxsize=10000)
         self.url_set = url_table.ThreadSafeSet()
 
     def initialize(self, config_path):
@@ -63,7 +63,7 @@ class Spider(object):
 
         for i in range(self.config.thread_num):
             thread = crawl_thread.CrawlThread(self.config, self.url_queue, self.url_set)
-            thread.daemon = True
+            #thread.daemon = True
             thread.start()
 
         self.url_queue.join()
@@ -71,4 +71,5 @@ class Spider(object):
     def print_info(self):
         """Print statistics information
         """
+        logging.info("[uncrawled num in queue:%d]" % self.url_queue.qsize())
         logging.info("[crawled num:%d]" % self.url_set.size())
